@@ -1,3 +1,3 @@
-# JavaFXTemplate
+# DataAccess
 
-Plantilla de creación de proyectos **JavaFX** con Maven
+Programa de acceso a ficheros con **JavaFX**
