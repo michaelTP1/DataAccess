@@ -1,10 +1,11 @@
-package aed.javafx.dataaccess.fileaccess.view;
+package aed.javafx.dataaccess.fileaccess;
 
 import java.io.File;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -25,7 +26,7 @@ public class FileAccessView extends Tab {
 	private BorderPane root;
 	private Label nameLabel;
 	private GridPane contentPane;
-	private TextField pathText, newPathText;
+	private TextField currentPathText, destinyPathText;
 	private ListView<File> fileListView;
 	private CheckBox folderCheckBox, fileCheckBox;
 	private Button createButton, delButton, moveButton, showButton, viewFileButton, modFileButton;
@@ -41,16 +42,17 @@ public class FileAccessView extends Tab {
 
 		contentPane = new GridPane();
 
-		pathText = new TextField();
+		currentPathText = new TextField();
 
-		newPathText = new TextField();
-		newPathText.setPromptText("Carpeta o fichero a crear, modificar, eliminar o destino a mover");
+		destinyPathText = new TextField();
+		destinyPathText.setPromptText("Carpeta o fichero a crear, modificar, eliminar o destino a mover");
 
 		fileListView = new ListView<File>();
 		fileListView.setMaxHeight(150);
 		fileListView.setPrefHeight(50);
 
 		folderCheckBox = new CheckBox("Es carpeta");
+		folderCheckBox.setSelected(true);
 
 		fileCheckBox = new CheckBox("Es fichero");
 
@@ -80,21 +82,18 @@ public class FileAccessView extends Tab {
 		contentPane.setHgap(5);
 		contentPane.setVgap(5);
 
-		contentPane.addRow(0, new Label("Ruta Actual: "), pathText);
+		contentPane.addRow(0, new Label("Ruta Actual: "), currentPathText);
 		contentPane.addRow(1, buttonRowBox);
-		contentPane.addRow(2, newPathText);
+		contentPane.addRow(2, destinyPathText);
 		contentPane.addRow(3, showButton);
 		contentPane.addRow(4, fileListView);
 		contentPane.addRow(5, fileButtonBox, fileContentArea);
 
-		
 		GridPane.setColumnSpan(buttonRowBox, 2);
-		GridPane.setColumnSpan(newPathText, 2);
+		GridPane.setColumnSpan(destinyPathText, 2);
 		GridPane.setColumnSpan(showButton, 2);
 		GridPane.setColumnSpan(fileListView, 2);
 		GridPane.setColumnSpan(viewFileButton, 2);
-	
-		
 
 		ColumnConstraints[] cols = { new ColumnConstraints(), new ColumnConstraints(),
 
@@ -112,6 +111,7 @@ public class FileAccessView extends Tab {
 
 		row[5].setVgrow(Priority.ALWAYS);
 		row[5].setFillHeight(true);
+		row[5].setValignment(VPos.CENTER);
 
 		contentPane.setPadding(new Insets(5, 5, 5, 5));
 
@@ -125,20 +125,12 @@ public class FileAccessView extends Tab {
 
 	}
 
-	public BorderPane getRoot() {
-		return root;
+	public TextField getCurrentPathText() {
+		return currentPathText;
 	}
 
-	public GridPane getContentPane() {
-		return contentPane;
-	}
-
-	public TextField getPathText() {
-		return pathText;
-	}
-
-	public TextField getNewPathText() {
-		return newPathText;
+	public TextField getDestinyPathText() {
+		return destinyPathText;
 	}
 
 	public ListView<File> getFileListView() {

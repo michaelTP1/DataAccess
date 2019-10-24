@@ -1,21 +1,21 @@
 package aed.javafx.dataaccess;
 
-import aed.javafx.dataaccess.fileaccess.view.FileAccessView;
-import javafx.scene.control.Tab;
+import aed.javafx.dataaccess.fileaccess.FileAccessController;
+import aed.javafx.dataaccess.fileaccess.FileAccessView;
 import javafx.scene.control.TabPane;
 
 public class DataAccessView extends TabPane{
 
-	FileAccessView fileAccess;
+	FileAccessView fileAccessTab= new FileAccessController().getView();
 	
 	
 	
 	public DataAccessView() {
 		super();
 		
-		fileAccess=new FileAccessView();
 		
-		this.getTabs().addAll(fileAccess);
+		
+		this.getTabs().addAll(fileAccessTab);
 		
 	}
 }

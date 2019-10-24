@@ -5,13 +5,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class MVCApp extends Application {
-
-	// controllers
-
-
-
-	// model
-
+	
+	//controllers
+	
+	
 
 
 
@@ -20,10 +17,6 @@ public class MVCApp extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 	
-
-		// bindeos
-
-		
 
 		Scene scene = new Scene(new DataAccessView(),680, 480);
 		
