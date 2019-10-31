@@ -7,9 +7,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -28,7 +29,7 @@ public class FileAccessView extends Tab {
 	private GridPane contentPane;
 	private TextField currentPathText, destinyPathText;
 	private ListView<File> fileListView;
-	private CheckBox folderCheckBox, fileCheckBox;
+	private RadioButton fileRadioButton, directoryRadioButton;
 	private Button createButton, delButton, moveButton, showButton, viewFileButton, modFileButton;
 	private TextArea fileContentArea;
 	private HBox buttonRowBox;
@@ -51,10 +52,11 @@ public class FileAccessView extends Tab {
 		fileListView.setMaxHeight(150);
 		fileListView.setPrefHeight(50);
 
-		folderCheckBox = new CheckBox("Es carpeta");
-		folderCheckBox.setSelected(true);
+		fileRadioButton = new RadioButton("Es fichero");
+		fileRadioButton.setSelected(true);
+		
 
-		fileCheckBox = new CheckBox("Es fichero");
+		directoryRadioButton = new RadioButton("Es carpeta");
 
 		createButton = new Button("Crear");
 
@@ -62,7 +64,7 @@ public class FileAccessView extends Tab {
 
 		moveButton = new Button("Mover");
 
-		buttonRowBox = new HBox(createButton, delButton, moveButton, folderCheckBox, fileCheckBox);
+		buttonRowBox = new HBox(createButton, delButton, moveButton,new Separator(), fileRadioButton, directoryRadioButton);
 		buttonRowBox.setSpacing(5);
 		buttonRowBox.setAlignment(Pos.BASELINE_LEFT);
 
@@ -125,6 +127,14 @@ public class FileAccessView extends Tab {
 
 	}
 
+	public RadioButton getFileRadioButton() {
+		return fileRadioButton;
+	}
+
+	public RadioButton getDirectoryRadioButton() {
+		return directoryRadioButton;
+	}
+
 	public TextField getCurrentPathText() {
 		return currentPathText;
 	}
@@ -137,13 +147,7 @@ public class FileAccessView extends Tab {
 		return fileListView;
 	}
 
-	public CheckBox getFolderCheckBox() {
-		return folderCheckBox;
-	}
-
-	public CheckBox getFileCheckBox() {
-		return fileCheckBox;
-	}
+	
 
 	public Button getCreateButton() {
 		return createButton;

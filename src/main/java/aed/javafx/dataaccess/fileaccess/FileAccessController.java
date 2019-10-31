@@ -5,11 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import com.sun.javafx.iio.ImageStorage.ImageType;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import aed.javafx.dataaccess.FileOrDirectoryNotFoundException;
-import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -18,8 +17,6 @@ public class FileAccessController {
 
 	private FileAccessView root = new FileAccessView();
 	private FileAccessModel model = new FileAccessModel();
-
-	private File file;
 
 	private Alert errorAlert = new Alert(AlertType.ERROR);
 
@@ -33,17 +30,19 @@ public class FileAccessController {
 		model.currentPathProperty().bindBidirectional(root.getCurrentPathText().textProperty());
 		model.destinyPathProperty().bind(root.getDestinyPathText().textProperty());
 
-		model.isFileProperty().bindBidirectional(root.getFileCheckBox().selectedProperty());
-		model.isDirectoryProperty().bindBidirectional(root.getFolderCheckBox().selectedProperty());
+		model.isFileProperty().bindBidirectional(root.getFileRadioButton().selectedProperty());
+		model.isDirectoryProperty().bindBidirectional(root.getDirectoryRadioButton().selectedProperty());
 
-		root.getFileCheckBox().selectedProperty().addListener(e -> onFileCheckBoxSelectedAction(e));
-		root.getFolderCheckBox().selectedProperty().addListener(e -> onFolderCheckBoxSelectedAction(e));
+		root.getFileRadioButton().setOnAction(e -> onFileRadioButtonAction(e));
+		root.getDirectoryRadioButton().setOnAction(e -> onDirectoryRadioButtonAction(e));
 
 		model.fileContentProperty().bindBidirectional(root.getFileContentArea().textProperty());
-		
-		
-		
-		model.setCurrentPath(System.getProperty("user.home") + "\\FileAccess\\");
+
+		model.setCurrentPath(System.getProperty("user.home") + File.separator + "FileAccess" + File.separator);
+
+		model.setFile(new File(model.getCurrentPath()));
+		if (!model.getFile().exists())
+			model.getFile().mkdir();
 
 		root.getCreateButton().setOnAction(e -> onCreateButtonAction(e));
 		root.getDelButton().setOnAction(e -> onDelButtonAction(e));
@@ -54,15 +53,14 @@ public class FileAccessController {
 
 	}
 
-	private void onFolderCheckBoxSelectedAction(Observable e) {
-		
-			model.setIsFile(false);
+
+	private void onDirectoryRadioButtonAction(ActionEvent e) {
+		model.setIsFile(false);
 
 	}
 
-	private void onFileCheckBoxSelectedAction(Observable e) {
-
-			model.setIsDirectory(false);
+	private void onFileRadioButtonAction(ActionEvent e) {
+		model.setIsDirectory(false);
 	}
 
 	private void onModFileButtonAction(ActionEvent e) {
@@ -98,19 +96,86 @@ public class FileAccessController {
 	private void onMoveButtonAction(ActionEvent e) {
 		try {
 			initFile();
+			if (model.getFile().isFile())
+				Files.move(Paths.get(model.getCurrentPath()),
+						Paths.get(model.getDestinyPath() + model.getFile().getName()));
+			else {
 
+				File destiny = new File(model.getDestinyPath() + model.getFile().getName());
+				destiny.mkdir();
+
+				directoryMover(model.getFile());
+				model.getFile().delete();
+
+			}
+
+		} catch (FileOrDirectoryNotFoundException e2) {
+			errorAlert.showAndWait();
+		} catch (IOException e1) {
+			Alert moveErrorAlert = new Alert(AlertType.ERROR);
+			moveErrorAlert.setTitle("Error");
+			moveErrorAlert.setHeaderText("Error al mover el fichero");
+			moveErrorAlert.setContentText("Compruebe que la ruta de destino es correcta");
+			moveErrorAlert.showAndWait();
+			e1.printStackTrace();
+		}
+
+	}
+
+	private void onDelButtonAction(ActionEvent e) {
+
+		try {
+			initFile();
+			if (!model.getDestinyPath().isBlank()) {
+				model.setFile(new File(model.getCurrentPath().concat(model.getDestinyPath())));
+				if (model.getFile().exists()) {
+					if (!model.getFile().isFile())
+						directoryDeleter(model.getFile());
+					model.getFile().delete();
+				}
+
+			}
 		} catch (FileOrDirectoryNotFoundException e2) {
 			errorAlert.showAndWait();
 		}
 
 	}
 
-	private void onDelButtonAction(ActionEvent e) {
-		try {
-			initFile();
+	private void directoryDeleter(File delFile) {
 
-		} catch (FileOrDirectoryNotFoundException e2) {
-			errorAlert.showAndWait();
+		File[] files = delFile.listFiles();
+
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].isDirectory())
+				directoryDeleter(files[i]);
+			files[i].delete();
+		}
+
+	}
+
+	private void directoryMover(File movFile) {
+
+		File[] files = movFile.listFiles();
+		File[] destiny = new File[files.length];
+
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].isDirectory()) {
+				destiny[i] = new File(model.getDestinyPath() + model.getFile().getName()
+						+ files[i].getPath().toString().substring(model.getCurrentPath().length() - 1));
+				destiny[i].mkdir();
+				directoryMover(files[i]);
+			} else {
+				try {
+
+					Files.move(Paths.get(files[i].getPath()), Paths.get(model.getDestinyPath() + model.getFile().getName()
+							+ files[i].getPath().toString().substring(model.getCurrentPath().length() - 1)));
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			files[i].delete();
 		}
 
 	}
@@ -120,58 +185,67 @@ public class FileAccessController {
 			initFile();
 
 			if (!model.getDestinyPath().isBlank()) {
+				model.setFile(new File(model.getCurrentPath().concat(model.getDestinyPath())));
 
-				file = new File(model.getCurrentPath().concat(model.getDestinyPath()));
+				if (model.getFile().exists()) {
+					Alert alreadyExistsAlert = new Alert(AlertType.ERROR);
+					alreadyExistsAlert.setTitle("Error");
+					alreadyExistsAlert.setHeaderText("El fichero ya existe");
+					alreadyExistsAlert.setContentText(
+							"Introduzca otro nombre o acceda a el mediante los botones correspondientes");
+					alreadyExistsAlert.showAndWait();
+				} else {
 
-				if(model.isIsFile()) {
-					FileWriter fw=new FileWriter(file);
-					PrintWriter writer=new PrintWriter(fw);
-					
-					writer.print(model.getFileContent());
-					writer.flush();
-					
-					writer.close();
+					if (model.isIsFile()) {
+						FileWriter fw = new FileWriter(model.getFile());
+						PrintWriter writer = new PrintWriter(fw);
+
+						writer.print(model.getFileContent());
+						writer.flush();
+
+						writer.close();
+
+					} else
+
+						model.getFile().mkdir();
+
 				}
-				
-				else
-					
-					file.mkdir();
-				
-			}
-			else {
-				Alert noNameAlert=new Alert(AlertType.ERROR);
+			} else {
+				Alert noNameAlert = new Alert(AlertType.ERROR);
 				noNameAlert.setTitle("Error");
 				noNameAlert.setHeaderText("Introduzca nombre de fichero o directorio");
 				noNameAlert.setContentText("Necesita introducir el nombre del fichero o directorio para crearlo");
 				noNameAlert.showAndWait();
 			}
-			
-			
 
 		} catch (FileOrDirectoryNotFoundException e2) {
 			errorAlert.showAndWait();
-		
-		}catch (FileNotFoundException e2) {
-			Alert fileOrDirectoryNameAlert=new Alert(AlertType.ERROR);
+
+		} catch (FileNotFoundException e2) {
+			Alert fileOrDirectoryNameAlert = new Alert(AlertType.ERROR);
 			fileOrDirectoryNameAlert.setTitle("Error");
 			fileOrDirectoryNameAlert.setHeaderText("Nombre incorrecto");
-			fileOrDirectoryNameAlert.setContentText("Es posible que ya exista un fichero o directorio con ese nombre.\nPor favor, escoja otro nombre");
+			fileOrDirectoryNameAlert.setContentText(
+					"Es posible que ya exista un fichero o directorio con ese nombre.\nPor favor, escoja otro nombre");
 			fileOrDirectoryNameAlert.showAndWait();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
 
 	}
 
 	private boolean initFile() throws FileOrDirectoryNotFoundException {
-		file = new File(model.getCurrentPath());
+		model.setFile(new File(model.getCurrentPath()));
 
-		if (!file.exists())
+		if (!model.getFile().exists())
 			throw new FileOrDirectoryNotFoundException();
-
-		return file.isFile();
+		
+		if(!model.getDestinyPath().isBlank())
+			if(model.getDestinyPath().charAt(model.getDestinyPath().length()-1)!='\\')
+				root.getDestinyPathText().setText(model.getDestinyPath()+'\\');
+			
+		return model.getFile().isFile();
 	}
 
 	public FileAccessView getView() {

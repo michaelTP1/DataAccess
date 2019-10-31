@@ -1,5 +1,7 @@
 package aed.javafx.dataaccess.fileaccess;
 
+import java.io.File;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,9 +14,18 @@ public class FileAccessModel {
 	private BooleanProperty isFile=new SimpleBooleanProperty();
 	private BooleanProperty isDirectory=new SimpleBooleanProperty();
 	private StringProperty fileContent=new SimpleStringProperty();
+	private File file;
 	
 	
 	
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
 	public final StringProperty currentPathProperty() {
 		return this.currentPath;
 	}
