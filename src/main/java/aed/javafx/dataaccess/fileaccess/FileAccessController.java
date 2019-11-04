@@ -22,9 +22,14 @@ public class FileAccessController {
 	private FileAccessModel model = new FileAccessModel();
 
 	private Alert errorAlert = new Alert(AlertType.ERROR);
+	Alert notFileAlert = new Alert(AlertType.ERROR);
 
 	public FileAccessController() {
-
+		
+		notFileAlert.setTitle("Error");
+		notFileAlert.setHeaderText("La ruta especificada no corresponde a un fichero");
+		notFileAlert.setContentText("Por favor, compruebe la ruta a la que desea acceder e inténtelo de nuevo");
+		
 		errorAlert.setTitle("Error");
 		errorAlert.setContentText("El fichero o directorio no existe");
 
@@ -181,10 +186,7 @@ public class FileAccessController {
 		try {
 			initFile();
 			if (model.getFile().isDirectory()) {
-				Alert notFileAlert = new Alert(AlertType.ERROR);
-				notFileAlert.setTitle("Error");
-				notFileAlert.setHeaderText("La ruta especificada no corresponde a un fichero");
-				notFileAlert.setContentText("Por favor, compruebe la ruta a la que desea acceder e inténtelo de nuevo");
+				notFileAlert.showAndWait();
 			} else {
 				readFile(model.getFile());
 			}
@@ -223,6 +225,7 @@ public class FileAccessController {
 	private void onModFileButtonAction(ActionEvent e) {
 		try {
 			initFile();
+			if(model.getFile().isFile()) {
 			FileWriter fw = new FileWriter(model.getFile());
 			PrintWriter writer = new PrintWriter(fw);
 
@@ -231,7 +234,9 @@ public class FileAccessController {
 
 			writer.close();
 
-
+			}else {
+				notFileAlert.showAndWait();
+			}
 		} catch (FileOrDirectoryNotFoundException e2) {
 			errorAlert.showAndWait();
 		} catch (IOException e1) {
