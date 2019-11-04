@@ -214,10 +214,8 @@ public class FileAccessController {
 			br.close();
 			model.setFileContent(auxString);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -225,9 +223,20 @@ public class FileAccessController {
 	private void onModFileButtonAction(ActionEvent e) {
 		try {
 			initFile();
+			FileWriter fw = new FileWriter(model.getFile());
+			PrintWriter writer = new PrintWriter(fw);
+
+			writer.print(model.getFileContent());
+			writer.flush();
+
+			writer.close();
+
 
 		} catch (FileOrDirectoryNotFoundException e2) {
 			errorAlert.showAndWait();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 
 	}
@@ -259,7 +268,6 @@ public class FileAccessController {
 			if (e.getClickCount() == 2) {
 				model.setFileContent("");;
 				File selectedFile = model.getFileList().get(model.getSelected());
-//						
 				if (selectedFile.isDirectory()) {
 					model.setCurrentPath(
 							selectedFile.getAbsolutePath());
