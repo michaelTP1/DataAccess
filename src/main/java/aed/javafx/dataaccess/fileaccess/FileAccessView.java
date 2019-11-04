@@ -2,6 +2,7 @@ package aed.javafx.dataaccess.fileaccess;
 
 import java.io.File;
 
+
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -111,8 +112,11 @@ public class FileAccessView extends Tab {
 
 		contentPane.getRowConstraints().setAll(row);
 
-		row[5].setVgrow(Priority.ALWAYS);
-		row[5].setFillHeight(true);
+		row[4].setVgrow(Priority.SOMETIMES);
+		row[4].setPercentHeight(15);
+		row[4].setFillHeight(true);
+		row[5].setVgrow(Priority.SOMETIMES);
+//		row[5].setFillHeight(true);
 		row[5].setValignment(VPos.CENTER);
 
 		contentPane.setPadding(new Insets(5, 5, 5, 5));
