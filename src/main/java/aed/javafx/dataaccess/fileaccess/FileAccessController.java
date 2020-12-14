@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -36,7 +38,7 @@ public class FileAccessController {
 		// bindeos
 
 		model.currentPathProperty().bindBidirectional(root.getCurrentPathText().textProperty());
-		model.destinyPathProperty().bind(root.getDestinyPathText().textProperty());
+		model.destinyPathProperty().bindBidirectional(root.getDestinyPathText().textProperty());
 
 		model.isFileProperty().bindBidirectional(root.getFileRadioButton().selectedProperty());
 		model.isDirectoryProperty().bindBidirectional(root.getDirectoryRadioButton().selectedProperty());
@@ -46,13 +48,15 @@ public class FileAccessController {
 		
 		model.fileListProperty().bindBidirectional(root.getFileListView().itemsProperty());
 		model.selectedProperty().bind(root.getFileListView().getSelectionModel().selectedIndexProperty());
-
+//		model.selectedProperty().addListener((o)->model.setDestinyPath( model.getFileList().get(model.getSelected()).getPath()));
+		
 		model.fileContentProperty().bindBidirectional(root.getFileContentArea().textProperty());
 
-		model.setCurrentPath(System.getProperty("user.home") + File.separator + "FileAccess" + File.separator);
+		model.setCurrentPath(System.getProperty("user.home") + File.separator);
+		model.setDestinyPath("FileAccess"+File.separator);
 
 		root.getFileListView().setOnMouseClicked(e -> onFileListMouseClicked(e));
-		model.selectedProperty().bind(root.getFileListView().getSelectionModel().selectedIndexProperty());
+		
 
 		model.setFile(new File(model.getCurrentPath()));
 		if (!model.getFile().exists())
@@ -62,10 +66,25 @@ public class FileAccessController {
 		root.getDelButton().setOnAction(e -> onDelButtonAction(e));
 		root.getMoveButton().setOnAction(e -> onMoveButtonAction(e));
 		root.getShowButton().setOnAction(e -> onShowButtonAction(e));
-		root.getViewFileButton().setOnAction(e -> onViewFileButtonAction(e));
 		root.getModFileButton().setOnAction(e -> onModFileButtonAction(e));
+		root.getBackButton().setOnAction(e->onBackButtonAction(e));
 
 	}
+
+
+	private void onBackButtonAction(ActionEvent e) {
+		if(null!=model.getFile().getParent())
+			model.setCurrentPath(model.getFile().getParent());
+		
+		try {
+			changeFileListSelection();
+		} catch (FileOrDirectoryNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	}
+
 
 	private void onCreateButtonAction(ActionEvent e) {
 
@@ -270,17 +289,23 @@ public class FileAccessController {
 
 	private void onFileListMouseClicked(MouseEvent e) {
 		try {
+			File selectedFile = model.getFileList().get(model.getSelected());
+			model.setDestinyPath(selectedFile.getAbsolutePath());
 			if (e.getClickCount() == 2) {
 				model.setFileContent("");;
-				File selectedFile = model.getFileList().get(model.getSelected());
-				if (selectedFile.isDirectory()) {
+					
 					model.setCurrentPath(
-							selectedFile.getAbsolutePath());
-					changeFileListSelection();
-				} else {
+					selectedFile.getAbsolutePath());
+					
+				
+				
+					if (selectedFile.isFile()) {
 					readFile(selectedFile);
 
+				} else {
+					changeFileListSelection();
 				}
+				
 
 			}
 		} catch (FileOrDirectoryNotFoundException ex) {

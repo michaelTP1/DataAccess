@@ -8,7 +8,7 @@ public class MVCApp extends Application {
 	
 	//controllers
 	
-	
+	private DataAccessController root;
 
 
 
@@ -16,13 +16,9 @@ public class MVCApp extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-	
+		root=new DataAccessController();
 
-		Scene scene = new Scene(new DataAccessView(),680, 480);
-		
-		
-		primaryStage.setMinWidth(680);
-		primaryStage.setMinHeight(480);
+		Scene scene = new Scene(root.getView(),680, 480);
 		primaryStage.setTitle("ver");
 		primaryStage.setScene(scene);
 		primaryStage.show();

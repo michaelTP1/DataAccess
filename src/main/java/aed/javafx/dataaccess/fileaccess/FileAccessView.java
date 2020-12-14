@@ -23,26 +23,23 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 
-public class FileAccessView extends Tab {
+public class FileAccessView extends GridPane {
 
-	private BorderPane root;
-	private Label nameLabel;
-	private GridPane contentPane;
+
+	
 	private TextField currentPathText, destinyPathText;
 	private ListView<File> fileListView;
 	private RadioButton fileRadioButton, directoryRadioButton;
-	private Button createButton, delButton, moveButton, showButton, viewFileButton, modFileButton;
+	private Button createButton, delButton, moveButton, showButton, modFileButton,backButton;
 	private TextArea fileContentArea;
 	private HBox buttonRowBox;
 
 	public FileAccessView() {
 		super();
 
-		nameLabel = new Label("Michael Jonay Trujillo Padilla");
+	
 
-		root = new BorderPane();
-
-		contentPane = new GridPane();
+		
 
 		currentPathText = new TextField();
 
@@ -64,44 +61,44 @@ public class FileAccessView extends Tab {
 		delButton = new Button("Eliminar");
 
 		moveButton = new Button("Mover");
+		
+		backButton=new Button("volver");
 
 		buttonRowBox = new HBox(createButton, delButton, moveButton,new Separator(), fileRadioButton, directoryRadioButton);
 		buttonRowBox.setSpacing(5);
 		buttonRowBox.setAlignment(Pos.BASELINE_LEFT);
 
-		showButton = new Button("Ver ficheros y carpetas");
+		showButton = new Button("Ver contenido");
 
-		viewFileButton = new Button("Ver contenido del fichero");
-		viewFileButton.setPrefWidth(viewFileButton.getMaxWidth());
+		
 
 		modFileButton = new Button("Modificar fichero");
 
-		VBox fileButtonBox = new VBox(viewFileButton, new Label(), new Label(), modFileButton);
+		VBox fileButtonBox = new VBox( modFileButton);
 		fileButtonBox.setSpacing(5);
 
 		fileContentArea = new TextArea();
 
-		contentPane.setPadding(new Insets(5));
-		contentPane.setHgap(5);
-		contentPane.setVgap(5);
+		this.setPadding(new Insets(5));
+		this.setHgap(5);
+		this.setVgap(5);
 
-		contentPane.addRow(0, new Label("Ruta Actual: "), currentPathText);
-		contentPane.addRow(1, buttonRowBox);
-		contentPane.addRow(2, destinyPathText);
-		contentPane.addRow(3, showButton);
-		contentPane.addRow(4, fileListView);
-		contentPane.addRow(5, fileButtonBox, fileContentArea);
+		this.addRow(0, new Label("Ruta Actual: "), currentPathText);
+		this.addRow(1, buttonRowBox);
+		this.addRow(2, destinyPathText);
+		this.addRow(3, showButton, backButton);
+		this.addRow(4, fileListView);
+		this.addRow(5, fileButtonBox, fileContentArea);
 
 		GridPane.setColumnSpan(buttonRowBox, 2);
 		GridPane.setColumnSpan(destinyPathText, 2);
-		GridPane.setColumnSpan(showButton, 2);
+		GridPane.setColumnSpan(showButton, 3);
 		GridPane.setColumnSpan(fileListView, 2);
-		GridPane.setColumnSpan(viewFileButton, 2);
 
 		ColumnConstraints[] cols = { new ColumnConstraints(), new ColumnConstraints(),
 
 		};
-		contentPane.getColumnConstraints().setAll(cols);
+		this.getColumnConstraints().setAll(cols);
 
 		cols[0].setHalignment(HPos.LEFT);
 		cols[1].setHgrow(Priority.ALWAYS);
@@ -110,7 +107,7 @@ public class FileAccessView extends Tab {
 		RowConstraints[] row = { new RowConstraints(), new RowConstraints(), new RowConstraints(), new RowConstraints(),
 				new RowConstraints(), new RowConstraints() };
 
-		contentPane.getRowConstraints().setAll(row);
+		this.getRowConstraints().setAll(row);
 
 		row[4].setVgrow(Priority.SOMETIMES);
 		row[4].setPercentHeight(15);
@@ -119,16 +116,20 @@ public class FileAccessView extends Tab {
 //		row[5].setFillHeight(true);
 		row[5].setValignment(VPos.CENTER);
 
-		contentPane.setPadding(new Insets(5, 5, 5, 5));
+		this.setPadding(new Insets(5, 5, 5, 5));
 
-		root.setTop(nameLabel);
-		root.setCenter(contentPane);
-		BorderPane.setAlignment(nameLabel, Pos.CENTER);
-		BorderPane.setAlignment(root, Pos.CENTER);
+		
 
-		setContent(root);
-		setText("Acceso a ficheros");
+		
 
+	}
+
+	public Button getBackButton() {
+		return backButton;
+	}
+
+	public void setBackButton(Button backButton) {
+		this.backButton = backButton;
 	}
 
 	public RadioButton getFileRadioButton() {
@@ -169,9 +170,7 @@ public class FileAccessView extends Tab {
 		return showButton;
 	}
 
-	public Button getViewFileButton() {
-		return viewFileButton;
-	}
+
 
 	public Button getModFileButton() {
 		return modFileButton;
