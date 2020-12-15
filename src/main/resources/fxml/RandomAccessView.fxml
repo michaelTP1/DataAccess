@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="view" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" spacing="10.0" HBox.hgrow="SOMETIMES">
+               <children>
+                  <Button fx:id="vizualizarButton" mnemonicParsing="false" onAction="#onVisualizarAction" prefWidth="170.0" text="Visualizar Contenido" />
+                  <HBox alignment="CENTER" prefWidth="200.0" spacing="5.0">
+                     <children>
+                        <Label text="Buscar por id:" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="idText" prefHeight="26.0" prefWidth="43.0" promptText="ID" />
+                        <Button fx:id="buscarIdButton" mnemonicParsing="false" onAction="#onBuscarPorIdAction" prefHeight="26.0" prefWidth="36.0" text="--&gt;" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <Button fx:id="modificarButton" mnemonicParsing="false" onAction="#onModificarCopasAction" prefWidth="170.0" text="Modificar copas" />
+                  <Button fx:id="insertarDatosButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onInsertarDatosAction" prefWidth="170.0" text="Insertar Datos" />
+               </children>
+            </VBox>
+            <TableView fx:id="TablaDatos" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="codColumn" editable="false" minWidth="75.0" prefWidth="-1.0" text="codEquipo" />
+                <TableColumn fx:id="nomColumn" editable="false" minWidth="180.0" prefWidth="-1.0" text="Nombre Equipo" />
+                  <TableColumn fx:id="codLigaColumn" editable="false" minWidth="75.0" prefWidth="-1.0" text="Código Liga" />
+                  <TableColumn fx:id="localidadColumn" minWidth="100.0" prefWidth="-1.0" text="Localidad" />
+                  <TableColumn fx:id="copasColumn" editable="false" minWidth="50.0" prefWidth="-1.0" text="Copas " />
+                  <TableColumn fx:id="internacionalColumn" minWidth="100.0" prefWidth="-1.0" text="Internacional" />
+              </columns>
+            </TableView>
+         </children>
+      </HBox>
+   </center>
+</BorderPane>
